@@ -1,0 +1,1066 @@
+/* Reset e Configurações Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Cores do Tema */
+    --bg-primary: #0a0d14;
+    --bg-secondary: #121824;
+    --card-bg: rgba(20, 27, 41, 0.65);
+    --card-border: rgba(255, 255, 255, 0.07);
+    --card-hover-border: rgba(255, 255, 255, 0.15);
+    
+    --text-main: #f1f2f6;
+    --text-muted: #8b9bb4;
+    --text-dim: #5c6b84;
+    
+    --color-accent: #6c5ce7;
+    --color-success: #2ecc71;
+    --color-warning: #f1c40f;
+    --color-danger: #e74c3c;
+    
+    /* Cores de Destaque por Crime */
+    --crime-homicidio: #ff4757;
+    --crime-latrocinio: #ffa502;
+    --crime-lcsm: #54a0ff;
+    --crime-feminicidio: #e056fd;
+    
+    /* Fontes */
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    
+    /* Efeitos */
+    --glow-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    height: 100vh;
+}
+
+/* Layout Principal */
+.app-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Sidebar de Filtros */
+.sidebar {
+    width: 320px;
+    background-color: #0d121c;
+    border-right: 1px solid var(--card-border);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    margin-bottom: 1.5rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #a8a5ff 0%, #6c5ce7 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logo-icon {
+    font-size: 1.6rem;
+    color: var(--color-accent);
+    background: linear-gradient(135deg, #a8a5ff 0%, #6c5ce7 100%);
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: initial;
+    /* Adiciona uma leve sombra colorida */
+    filter: drop-shadow(0 2px 10px rgba(108, 92, 231, 0.4));
+}
+
+.sidebar-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+.divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, var(--card-border) 0%, transparent 100%);
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.sidebar-footer p {
+    margin-bottom: 0.25rem;
+}
+
+/* Componentes de Filtro */
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-label {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Seletor Customizado */
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.filter-select {
+    width: 100%;
+    background-color: rgba(20, 26, 38, 0.8);
+    border: 1px solid var(--card-border);
+    color: var(--text-main);
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: var(--transition-smooth);
+}
+
+.filter-select:hover, .filter-select:focus {
+    border-color: var(--color-accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+}
+
+.select-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    font-size: 0.8rem;
+    transition: var(--transition-smooth);
+}
+
+.filter-select:focus + .select-icon {
+    color: var(--color-accent);
+}
+
+/* Checkboxes Customizados */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background-color: rgba(20, 26, 38, 0.4);
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 2rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-main);
+    user-select: none;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 18px;
+    width: 18px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    transition: var(--transition-smooth);
+}
+
+.checkbox-container:hover input ~ .checkmark {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--text-muted);
+}
+
+/* Cores específicas dos checkmarks quando marcados */
+.checkbox-container input:checked ~ .chk-homicidio {
+    background-color: var(--crime-homicidio);
+    border-color: var(--crime-homicidio);
+    box-shadow: 0 0 8px rgba(255, 71, 87, 0.5);
+}
+
+.checkbox-container input:checked ~ .chk-latrocinio {
+    background-color: var(--crime-latrocinio);
+    border-color: var(--crime-latrocinio);
+    box-shadow: 0 0 8px rgba(255, 165, 2, 0.5);
+}
+
+.checkbox-container input:checked ~ .chk-lcsm {
+    background-color: var(--crime-lcsm);
+    border-color: var(--crime-lcsm);
+    box-shadow: 0 0 8px rgba(84, 160, 255, 0.5);
+}
+
+.checkbox-container input:checked ~ .chk-feminicidio {
+    background-color: var(--crime-feminicidio);
+    border-color: var(--crime-feminicidio);
+    box-shadow: 0 0 8px rgba(224, 86, 253, 0.5);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.checkbox-container .checkmark:after {
+    left: 6px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Botões Alternadores de Métrica */
+.metric-toggle-container {
+    display: flex;
+    background-color: rgba(20, 26, 38, 0.8);
+    border: 1px solid var(--card-border);
+    padding: 0.25rem;
+    border-radius: 8px;
+    gap: 0.25rem;
+}
+
+.toggle-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    padding: 0.6rem 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: var(--transition-smooth);
+}
+
+.toggle-btn:hover {
+    color: var(--text-main);
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.toggle-btn.active {
+    background: linear-gradient(135deg, #6c5ce7 0%, #4b38d3 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+}
+
+/* Painel de Conteúdo Principal */
+.main-panel {
+    flex-grow: 1;
+    height: 100%;
+    overflow-y: auto;
+    padding: 2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    background: radial-gradient(circle at 70% 10%, rgba(108, 92, 231, 0.05) 0%, transparent 60%),
+                radial-gradient(circle at 10% 80%, rgba(224, 86, 253, 0.03) 0%, transparent 50%),
+                var(--bg-primary);
+}
+
+/* Header */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 1.25rem;
+}
+
+.header-text h1 {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.25rem;
+    background: linear-gradient(90deg, #ffffff 0%, #a8b2d1 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header-text p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+.theme-badge {
+    background-color: rgba(108, 92, 231, 0.12);
+    border: 1px solid rgba(108, 92, 231, 0.25);
+    color: #a8a5ff;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.1);
+}
+
+/* Efeito de Vidro (Glassmorphism) */
+.glass {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--glow-shadow);
+    transition: var(--transition-smooth);
+}
+
+.glass:hover {
+    border-color: var(--card-hover-border);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+}
+
+/* Grid de KPIs */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 155px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Adiciona um gradiente luminoso no topo dos cards de KPI */
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: transparent;
+    transition: var(--transition-smooth);
+}
+
+#kpi-total::before { background: linear-gradient(90deg, var(--crime-lcsm) 0%, #00d2d3 100%); }
+#kpi-rate::before { background: linear-gradient(90deg, var(--crime-feminicidio) 0%, #ff9ff3 100%); }
+#kpi-dominant::before { background: linear-gradient(90deg, var(--crime-latrocinio) 0%, #feca57 100%); }
+#kpi-highest-ra::before { background: linear-gradient(90deg, var(--color-accent) 0%, #a8a5ff 100%); }
+
+.kpi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.kpi-title {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: var(--font-heading);
+}
+
+.kpi-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.icon-cyan { background-color: rgba(84, 160, 255, 0.12); color: var(--crime-lcsm); }
+.icon-magenta { background-color: rgba(224, 86, 253, 0.12); color: var(--crime-feminicidio); }
+.icon-yellow { background-color: rgba(255, 165, 2, 0.12); color: var(--crime-latrocinio); }
+.icon-indigo { background-color: rgba(108, 92, 231, 0.12); color: var(--color-accent); }
+
+.kpi-value {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 2.2rem;
+    letter-spacing: -1px;
+    color: white;
+    margin: 0.25rem 0;
+}
+
+.kpi-value-small {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: -0.5px;
+    color: white;
+    margin: 0.4rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.kpi-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.kpi-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 0.1rem 0.35rem;
+}
+
+.trend-down {
+    color: var(--color-success);
+    background-color: rgba(46, 204, 113, 0.1);
+}
+
+.trend-up {
+    color: var(--color-danger);
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+.kpi-stat {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.kpi-footer-text {
+    color: var(--text-dim);
+    font-weight: 500;
+}
+
+/* Grid de Gráficos */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.chart-card {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.span-2 {
+    grid-column: span 2;
+}
+
+.span-3 {
+    grid-column: span 3;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chart-title {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.25px;
+}
+
+.chart-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.badge {
+    padding: 0.3rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-accent {
+    background-color: rgba(46, 204, 113, 0.15);
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    color: #2ecc71;
+}
+
+/* Controles Segmentados */
+.segmented-control {
+    display: flex;
+    background-color: rgba(20, 26, 38, 0.8);
+    border: 1px solid var(--card-border);
+    padding: 0.2rem;
+    border-radius: 8px;
+    gap: 0.2rem;
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    padding: 0.4rem 0.75rem;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: var(--transition-smooth);
+}
+
+.control-btn:hover {
+    color: var(--text-main);
+}
+
+.control-btn.active {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Tamanho mini de select */
+.select-small {
+    width: 130px;
+}
+
+.select-mini {
+    padding: 0.4rem 2rem 0.4rem 0.75rem !important;
+    font-size: 0.8rem !important;
+    border-radius: 8px !important;
+}
+
+.select-small .select-icon {
+    right: 0.75rem;
+    font-size: 0.75rem;
+}
+
+/* Containers de Canvas dos Gráficos */
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 320px;
+}
+
+.donut-container {
+    height: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bar-container {
+    height: 400px;
+}
+
+/* Customizações dos Gráficos (Chart.js tooltips) */
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Scrollbars Customizados */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--card-border);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-dim);
+}
+
+/* Animação de Carregamento dos Cards */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.kpi-card, .chart-card, .map-card {
+    animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.kpi-card:nth-child(1) { animation-delay: 0.05s; }
+.kpi-card:nth-child(2) { animation-delay: 0.1s; }
+.kpi-card:nth-child(3) { animation-delay: 0.15s; }
+.kpi-card:nth-child(4) { animation-delay: 0.2s; }
+.chart-card:nth-child(1) { animation-delay: 0.25s; }
+.chart-card:nth-child(2) { animation-delay: 0.3s; }
+.chart-card:nth-child(3) { animation-delay: 0.35s; }
+
+/* ==========================================================================
+   SISTEMA DE ABAS (TABS)
+   ========================================================================== */
+.tabs-nav {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.5rem;
+}
+
+.tab-btn {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    padding: 0.65rem 1.25rem;
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition-smooth);
+}
+
+.tab-btn:hover {
+    color: var(--text-main);
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+    color: white;
+    background-color: rgba(108, 92, 231, 0.12);
+    border-color: rgba(108, 92, 231, 0.25);
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.1);
+}
+
+.tab-content {
+    display: none;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.tab-content.active {
+    display: flex;
+}
+
+/* ==========================================================================
+   MAPA DE CALOR DO DF (LEAFLET E LAYOUT)
+   ========================================================================== */
+.map-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.75rem;
+    gap: 1.5rem;
+    height: 680px;
+    min-height: 550px;
+}
+
+.map-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.map-card-title-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.map-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: white;
+}
+
+.map-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.15rem;
+}
+
+.map-badge {
+    background-color: rgba(108, 92, 231, 0.12);
+    border: 1px solid rgba(108, 92, 231, 0.25);
+    color: #a8a5ff;
+    padding: 0.4rem 0.85rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+#map-container {
+    flex-grow: 1;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+    background-color: #0b0e14;
+    z-index: 10; /* Evita que Leaflet quebre layouts de grid */
+}
+
+.map-footer-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    padding-top: 0.75rem;
+}
+
+.legend-panel {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.legend-label {
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.legend-scale {
+    display: flex;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+}
+
+.scale-box {
+    padding: 0.2rem 0.75rem;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.map-note {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* Customizações Folhas e Popups Leaflet */
+.leaflet-container {
+    background: #0d121c !important;
+    font-family: var(--font-body) !important;
+}
+
+/* Layout de Popup Estilizado Estilo Glassmorphism */
+.leaflet-popup-content-wrapper {
+    background: rgba(18, 24, 38, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-main) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+    backdrop-filter: blur(8px);
+}
+
+.leaflet-popup-tip {
+    background: rgba(18, 24, 38, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.leaflet-popup-content {
+    margin: 12px 16px !important;
+    line-height: 1.5 !important;
+    font-size: 0.85rem !important;
+    width: auto !important;
+    min-width: 200px;
+}
+
+.map-popup-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+    margin-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 4px;
+}
+
+.map-popup-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    gap: 1.5rem;
+}
+
+.map-popup-label {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.map-popup-val {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.map-popup-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #6c5ce7 0%, #4b38d3 100%);
+    border: none;
+    color: white;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0.45rem;
+    border-radius: 6px;
+    margin-top: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: var(--transition-smooth);
+}
+
+.map-popup-btn:hover {
+    filter: brightness(1.15);
+    box-shadow: 0 2px 8px rgba(108, 92, 231, 0.4);
+}
+
+/* ==========================================================================
+   BANNER DE NOTIFICAÇÃO (SUBSTITUTOS DE ALERTS)
+   ========================================================================== */
+.notification-banner {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20000;
+    background: rgba(18, 24, 38, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    backdrop-filter: blur(10px);
+    animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    max-width: 90%;
+    width: 450px;
+}
+
+.notification-banner.error {
+    border-left-color: var(--color-danger);
+}
+
+.notification-banner.warning {
+    border-left-color: var(--color-warning);
+}
+
+.notification-banner.success {
+    border-left-color: var(--color-success);
+}
+
+.notification-banner.hidden {
+    display: none;
+}
+
+#notification-text {
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 500;
+    flex-grow: 1;
+}
+
+#notification-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition-smooth);
+}
+
+#notification-close:hover {
+    color: white;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+/* Responsividade (Telas menores) */
+@media (max-width: 1400px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .span-3 {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 1024px) {
+    .app-container {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+    }
+    
+    body {
+        height: auto;
+        overflow-y: auto;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--card-border);
+        padding: 1.5rem;
+    }
+    
+    .main-panel {
+        height: auto;
+        padding: 1.5rem;
+    }
+    
+    .map-card {
+        height: 550px;
+    }
+}
+
+@media (max-width: 768px) {
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    .span-2, .span-3 {
+        grid-column: span 1;
+    }
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    .chart-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .map-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .map-badge {
+        width: 100%;
+        text-align: center;
+    }
+    .map-footer-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+}

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Interativo CVLI Distrito Federal (2015-2024)</title>
+    <meta name="description" content="Dashboard analítico de Crimes Violentos Letais Intencionais (CVLI) no Distrito Federal (2015-2024). Analise taxas e dados absolutos por RA e ano.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet.js CSS (Fixed Version for Map) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- Dashboard Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- PapaParse for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" defer></script>
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    
+    <!-- Leaflet.js Script (Fixed Version for Map) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+    
+    <!-- Application script -->
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <!-- Banner de Notificação Customizado (Substitui alert) -->
+    <div id="notification-banner" class="notification-banner hidden" role="alert">
+        <span id="notification-text"></span>
+        <button id="notification-close" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar de Filtros e Controles -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fa-solid fa-shield-halved logo-icon"></i>
+                    <span>AnalyticaDF</span>
+                </div>
+                <p class="sidebar-subtitle">Painel de Segurança Pública</p>
+            </div>
+            
+            <hr class="divider">
+            
+            <div class="sidebar-content">
+                <!-- Visualização Principal -->
+                <div class="filter-group">
+                    <label class="filter-label">Métrica de Análise</label>
+                    <div class="metric-toggle-container">
+                        <button class="toggle-btn active" id="btn-metric-abs" data-metric="abs">
+                            <i class="fa-solid fa-list-ol"></i> Absoluto
+                        </button>
+                        <button class="toggle-btn" id="btn-metric-rate" data-metric="rate">
+                            <i class="fa-solid fa-chart-line"></i> Taxa / 100k
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filtro de Ano -->
+                <div class="filter-group">
+                    <label for="filter-year" class="filter-label">Ano de Referência</label>
+                    <div class="custom-select-wrapper">
+                        <select id="filter-year" class="filter-select">
+                            <option value="todos" selected>Todos os Anos (2015-2024)</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down select-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Filtro de Região Administrativa -->
+                <div class="filter-group">
+                    <label for="filter-ra" class="filter-label">Região Administrativa (RA)</label>
+                    <div class="custom-select-wrapper">
+                        <select id="filter-ra" class="filter-select">
+                            <option value="todas" selected>Todas as RAs (DF)</option>
+                            <!-- RAs serão populadas dinamicamente -->
+                        </select>
+                        <i class="fa-solid fa-chevron-down select-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Filtro de Tipo de Crime -->
+                <div class="filter-group">
+                    <label class="filter-label">Tipos de Crimes (CVLI)</label>
+                    <div class="checkbox-group" id="filter-crime-group">
+                        <label class="checkbox-container">
+                            <input type="checkbox" value="Homicídio" checked class="crime-checkbox">
+                            <span class="checkmark chk-homicidio"></span>
+                            Homicídio
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" value="Latrocínio" checked class="crime-checkbox">
+                            <span class="checkmark chk-latrocinio"></span>
+                            Latrocínio
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" value="Lesão Seguida de Morte" checked class="crime-checkbox">
+                            <span class="checkmark chk-lcsm"></span>
+                            Lesão Seg. Morte
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" value="Feminicídio" checked class="crime-checkbox">
+                            <span class="checkmark chk-feminicidio"></span>
+                            Feminicídio
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <p>Fonte: SSP/DF - Série Histórica</p>
+                <p>&copy; 2026 CVLI Distrito Federal</p>
+            </div>
+        </aside>
+
+        <!-- Painel Principal de Conteúdo -->
+        <main class="main-panel">
+            <!-- Header do Painel -->
+            <header class="main-header">
+                <div class="header-text">
+                    <h1 id="main-title">Crimes Violentos Letais Intencionais (CVLI)</h1>
+                    <p id="main-subtitle">Série Histórica e Análise Demográfica no Distrito Federal (2015-2024)</p>
+                </div>
+                <div class="theme-badge">
+                    <i class="fa-solid fa-brain"></i> Analytics Ativo
+                </div>
+            </header>
+
+            <!-- Abas de Navegação -->
+            <nav class="tabs-nav" aria-label="Navegação do Painel">
+                <button class="tab-btn active" id="btn-tab-dashboard" data-tab="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i> Gráficos e KPIs
+                </button>
+                <button class="tab-btn" id="btn-tab-map" data-tab="map">
+                    <i class="fa-solid fa-map-location-dot"></i> Mapa de Distribuição DF
+                </button>
+            </nav>
+
+            <!-- ABA 1: CONTEÚDO DO DASHBOARD ANALÍTICO -->
+            <div id="tab-dashboard-content" class="tab-content active">
+                <!-- Cards de KPI -->
+                <section class="kpi-grid" aria-label="Indicadores Chave">
+                    <!-- KPI 1: Vítimas Totais -->
+                    <div class="kpi-card glass" id="kpi-total">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Vítimas Acumuladas</span>
+                            <div class="kpi-icon icon-cyan">
+                                <i class="fa-solid fa-skull-crossbones"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-total-val">0</div>
+                        <div class="kpi-footer">
+                            <span class="kpi-trend trend-down" id="kpi-total-trend">
+                                <i class="fa-solid fa-circle-down"></i> <span id="kpi-total-trend-val">0%</span>
+                            </span>
+                            <span class="kpi-footer-text" id="kpi-total-footer-text">vs ano anterior</span>
+                        </div>
+                    </div>
+
+                    <!-- KPI 2: Taxa CVLI -->
+                    <div class="kpi-card glass" id="kpi-rate">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Taxa CVLI / 100k hab</span>
+                            <div class="kpi-icon icon-magenta">
+                                <i class="fa-solid fa-users-viewfinder"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-rate-val">0.0</div>
+                        <div class="kpi-footer">
+                            <span class="kpi-trend trend-down" id="kpi-rate-trend">
+                                <i class="fa-solid fa-circle-down"></i> <span id="kpi-rate-trend-val">0%</span>
+                            </span>
+                            <span class="kpi-footer-text" id="kpi-rate-footer-text">vs ano anterior</span>
+                        </div>
+                    </div>
+
+                    <!-- KPI 3: Crime Predominante -->
+                    <div class="kpi-card glass" id="kpi-dominant">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Crime Predominante</span>
+                            <div class="kpi-icon icon-yellow">
+                                <i class="fa-solid fa-chart-pie"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value-small" id="kpi-dominant-val">Homicídio</div>
+                        <div class="kpi-footer">
+                            <span class="kpi-stat" id="kpi-dominant-pct">0%</span>
+                            <span class="kpi-footer-text">das ocorrências totais</span>
+                        </div>
+                    </div>
+
+                    <!-- KPI 4: Região Mais Violenta -->
+                    <div class="kpi-card glass" id="kpi-highest-ra">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Maior Índice (RA)</span>
+                            <div class="kpi-icon icon-indigo">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value-small" id="kpi-highest-ra-val">Ceilândia</div>
+                        <div class="kpi-footer">
+                            <span class="kpi-stat" id="kpi-highest-ra-stat">0</span>
+                            <span class="kpi-footer-text" id="kpi-highest-ra-label">ocorrências</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Grid de Gráficos -->
+                <section class="charts-grid" aria-label="Visualizações Gráficas">
+                    <!-- Gráfico de Linha: Tendência Temporal -->
+                    <div class="chart-card glass span-2" id="card-temporal">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Evolução Temporal CVLI (2015-2024)</h2>
+                            <div class="chart-actions">
+                                <span class="badge badge-accent">Queda Histórica</span>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chart-temporal-canvas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico de Rosca: Composição de Crimes -->
+                    <div class="chart-card glass" id="card-composition">
+                        <div class="chart-header">
+                            <h2 class="chart-title">Composição por Tipo de Crime</h2>
+                        </div>
+                        <div class="chart-container donut-container">
+                            <canvas id="chart-composition-canvas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico de Barras: Ranking Regional -->
+                    <div class="chart-card glass span-3" id="card-ranking">
+                        <div class="chart-header">
+                            <h2 class="chart-title" id="ranking-chart-title">Ranking de Violência por Região Administrativa (RA)</h2>
+                            <div class="chart-actions">
+                                <div class="segmented-control" id="ranking-order-toggle">
+                                    <button class="control-btn active" data-order="top">Mais Violentas</button>
+                                    <button class="control-btn" data-order="bottom">Menos Violentas</button>
+                                </div>
+                                <div class="custom-select-wrapper select-small">
+                                    <select id="ranking-limit" class="filter-select select-mini">
+                                        <option value="10">Top 10 RAs</option>
+                                        <option value="15">Top 15 RAs</option>
+                                        <option value="all">Todas as RAs</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down select-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-container bar-container">
+                            <canvas id="chart-ranking-canvas"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ABA 2: CONTEÚDO DO MAPA INTERATIVO -->
+            <div id="tab-map-content" class="tab-content">
+                <div class="map-card glass">
+                    <div class="map-card-header">
+                        <div class="map-card-title-container">
+                            <h2 class="map-title">Mapa de Distribuição e Severidade</h2>
+                            <p class="map-subtitle">O diâmetro e intensidade dos círculos são recalculados conforme a métrica e filtros selecionados. Clique em uma RA para ver detalhes e filtrar o painel.</p>
+                        </div>
+                        <div class="map-badge" id="map-active-metric">
+                            Exibindo: Números Absolutos
+                        </div>
+                    </div>
+                    <div id="map-container"></div>
+                    
+                    <div class="map-footer-info">
+                        <div class="legend-panel">
+                            <span class="legend-label">Perfil de Risco (K-Means):</span>
+                            <div class="legend-scale">
+                                <span class="scale-box" style="background: rgba(108, 92, 231, 0.75)">Baixo Risco</span>
+                                <span class="scale-box" style="background: rgba(255, 165, 2, 0.75)">Médio Risco</span>
+                                <span class="scale-box" style="background: rgba(255, 71, 87, 0.75)">Alto Risco</span>
+                            </div>
+                        </div>
+                        <div class="map-note">
+                            <i class="fa-solid fa-circle-info"></i> Nota: Unidades Prisionais são representadas no Complexo da Papuda (São Sebastião) com população nula.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

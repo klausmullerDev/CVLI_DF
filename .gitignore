@@ -1,0 +1,33 @@
+# Ambientes virtuais e dependências locais
+.venv/
+venv/
+ENV/
+env/
+lib/
+bin/
+include/
+share/
+.Python
+pip-selfcheck.json
+
+# Caches do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Configurações de IDEs e editores
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*~
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários do Antigravity/Gemini
+.gemini/
