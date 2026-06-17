@@ -39,6 +39,71 @@ CVLI_DF/
 
 ---
 
+## 🛠️ Tecnologias Utilizadas
+
+O desenvolvimento do projeto é baseado em tecnologias eficientes para processamento de dados e visualização web interativa:
+
+* **Processamento de Dados (Python & Pipelines):**
+  * **Python 3**: Linguagem base do ecossistema de dados.
+  * **Pandas**: Biblioteca principal para Engenharia de Dados (ETL), utilizada para filtragem, fusão (`merge`), agregação (`groupby`/`agg`), rotação (`melt`) e normalização de tabelas.
+  * **NumPy**: Manipulação eficiente de vetores numéricos e tratamento de valores nulos estatísticos (`NaN`).
+  * **openpyxl & xlrd**: Motores de decodificação para leitura dinâmica de arquivos do Excel (`.xlsx` e `.xls`).
+  * **Scikit-Learn**: Biblioteca de Machine Learning utilizada para escalonamento (`StandardScaler`) e modelagem de clusterização (`KMeans`).
+* **Visualização e Frontend Web:**
+  * **HTML5 & Vanilla CSS**: Estrutura e estilização premium baseada em conceitos modernos de *Glassmorphism*, paletas de cores harmônicas em HSL e responsividade completa.
+  * **JavaScript (ES6+)**: Lógica reativa para manipulação segura de elementos DOM (prevenção contra ataques XSS usando injeção textual).
+  * **Leaflet.js**: Renderização e manipulação do mapa geográfico interativo do Distrito Federal.
+  * **Chart.js**: Renderização dos gráficos de linha temporal, pizza/rosca e barras.
+  * **PapaParse**: Biblioteca de alto desempenho para decodificação e processamento assíncrono direto de arquivos CSV gigantes na web.
+
+---
+
+## 🔄 Fluxo de Engenharia de Dados (ETL)
+
+O pipeline implementado em `scripts/etl.py` realiza o processamento ponta a ponta dos dados desde a sua extração em estado bruto até a carga em base de dados analítica.
+
+O fluxo de dados segue as seguintes etapas:
+
+```mermaid
+graph TD
+    A[fontes brutas SSP/DF & IPEDF] --> B[1. EXTRAÇÃO]
+    B --> B1[Leitura seletiva de arquivos XLSX/XLS - skiprows/sheet_name]
+    B --> B2[Carga otimizada de microdados CSV da PDAD - usecols/encoding]
+    
+    B1 & B2 --> C[2. TRANSFORMAÇÃO]
+    C --> C1[Tratamento de ruídos e nulos: - ou * para 0]
+    C --> C2[Unpivot / Rotação de matrizes de crimes com melt]
+    C --> C3[Grid de Integridade Cartesiana: 36 RAs x 10 Anos x 4 Crimes = 1.440 combinações]
+    C --> C4[Reconciliação e normalização ortográfica de nomes de RAs]
+    C --> C5[Cálculo de Renda Per Capita e Idade Média por agrupamento]
+    C --> C6[Processamento e mapeamento das variáveis de percepção de segurança B20_1, B20_2, B20_3]
+    
+    C1 & C2 & C3 & C4 & C5 & C6 --> D[3. CARGA]
+    D --> D1[Merge consolidado de crimes, população e socioeconômico]
+    D --> D2[Exportação final de dados para base_final_analitica_df.csv]
+```
+
+### Detalhamento das Etapas do Fluxo:
+
+1. **Extração (Extract):**
+   * **Dados de Crimes (SSP/DF):** Extrai o histórico de Homicídios, Latrocínios, Lesões Corporais Seguidas de Morte e Feminicídios diretamente das abas e planilhas XLSX brutas, pulando linhas de metadados administrativos (`skiprows`).
+   * **Dados de População (SSP/DF):** Extração da projeção populacional das RAs a partir da aba dedicada de população da planilha do Feminicídio.
+   * **Dados Socioeconômicos (PDAD 2021):** Carga sob demanda com baixo consumo de memória (`usecols`) dos arquivos `PDAD_2021-Domicilios.csv` (renda e segurança) e `PDAD_2021-Moradores.csv` (idade), e leitura dinâmica do dicionário de mapeamento oficial (`dicionario_de_variaveis_pdad_2021.xls`).
+
+2. **Transformação (Transform):**
+   * **Sanitização de Dados:** Remoção de agregados estáticos (como a linha totalizadora do "Distrito Federal" para evitar duplicação em somas) e caracteres especiais.
+   * **Normalização de Layout (Tidy Data):** O arquivo de crimes original possui o ano nas colunas. O script aplica a técnica de **unpivot** (`melt`) para criar um formato longo (ano em linha), facilitando a agregação analítica no dashboard.
+   * **Grid Cartesiano:** Criação de um grid com todas as combinações teoricamente possíveis de RAs, anos e tipos de crimes para preenchimento de vazios estatísticos com zero. Isso garante 1.440 observações estruturadas e remove "buracos" gráficos na série histórica das RAs seguras.
+   * **Agregações Estatísticas da PDAD:**
+     * Cálculo da renda média domiciliar per capita e idade média por RA.
+     * Mapeamento de respostas às perguntas de segurança: `B20_1` (Policiamento militar), `B20_2` (Segurança privada) e `B20_3` (Segurança comunitária). Respostas afirmativas são mapeadas para `100.0` e negativas para `0.0`, de forma a obter o percentual direto de prevalência de cada infraestrutura no agrupamento das RAs (ignorando respostas do tipo "Não sabe").
+   * **Reconciliação e Join:** Normalização de inconsistências textuais de nomes de RAs entre fontes (ex: `Plano Piloto` reconciliado para `Brasília (Plano Piloto)`), seguido de cruzamento final das tabelas (`pd.merge`).
+
+3. **Carga (Load):**
+   * Consolidação das colunas e gravação dos arquivos CSV estruturados finais `/src/base_final_analitica_df.csv` e fallback `/src/dados_cvli_df_tratados.csv` usando a codificação `utf-8-sig` para garantir compatibilidade multiplataforma (incluindo Excel e editores locais).
+
+---
+
 ## 📊 A Nova Base Analítica (`base_final_analitica_df.csv`)
 
 O arquivo final analítico gerado unifica três fontes de dados distintas:
