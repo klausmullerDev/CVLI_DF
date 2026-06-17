@@ -158,22 +158,39 @@ df_anexo['Descrição do valor'] = df_anexo['Descrição do valor'].astype(str).
 # Converte em dicionário ra_mapping_pdad
 ra_mapping_pdad = dict(zip(df_anexo['Valor'], df_anexo['Descrição do valor']))
 
-# 2. Processar Domicílios (Renda Domiciliar Per Capita)
+# 2. Processar Domicílios (Renda Domiciliar Per Capita e Indicadores de Segurança)
 print("Carregando Domicílios (Microdados)...")
+cols_dom = ["A01ra", "renda_domiciliar_pc", "B20_1", "B20_2", "B20_3"]
 try:
-    df_dom = pd.read_csv(dom_path, sep=";", usecols=["A01ra", "renda_domiciliar_pc"], encoding='latin-1')
+    df_dom = pd.read_csv(dom_path, sep=";", usecols=cols_dom, encoding='latin-1')
 except Exception as e:
     print(f"[AVISO] Falha ao ler Domicílios com latin-1, tentando utf-8: {e}")
-    df_dom = pd.read_csv(dom_path, sep=";", usecols=["A01ra", "renda_domiciliar_pc"], encoding='utf-8')
+    df_dom = pd.read_csv(dom_path, sep=";", usecols=cols_dom, encoding='utf-8')
 
 # Limpar renda_domiciliar_pc
 df_dom['renda_domiciliar_pc'] = df_dom['renda_domiciliar_pc'].astype(str).str.replace(',', '.')
 df_dom['renda_domiciliar_pc'] = pd.to_numeric(df_dom['renda_domiciliar_pc'], errors='coerce')
 
-# Agrupar por RA e calcular média
-print("Agrupando renda por RA...")
-df_dom_grouped = df_dom.groupby('A01ra')['renda_domiciliar_pc'].mean().reset_index()
-df_dom_grouped.rename(columns={'renda_domiciliar_pc': 'Renda_Per_Capita'}, inplace=True)
+# Processar as variáveis de segurança (1 = Sim, 2 = Não, outros como 88888 mapeados para NaN)
+df_dom['B20_1_val'] = df_dom['B20_1'].map({1: 100.0, 2: 0.0})
+df_dom['B20_2_val'] = df_dom['B20_2'].map({1: 100.0, 2: 0.0})
+df_dom['B20_3_val'] = df_dom['B20_3'].map({1: 100.0, 2: 0.0})
+
+# Agrupar por RA e calcular médias
+print("Agrupando domicílios por RA...")
+df_dom_grouped = df_dom.groupby('A01ra').agg({
+    'renda_domiciliar_pc': 'mean',
+    'B20_1_val': 'mean',
+    'B20_2_val': 'mean',
+    'B20_3_val': 'mean'
+}).reset_index()
+
+df_dom_grouped.rename(columns={
+    'renda_domiciliar_pc': 'Renda_Per_Capita',
+    'B20_1_val': 'Policiamento_Militar_Perc',
+    'B20_2_val': 'Seguranca_Privada_Perc',
+    'B20_3_val': 'Seguranca_Comunitaria_Perc'
+}, inplace=True)
 
 # 3. Processar Moradores (Idade Média)
 print("Carregando Moradores (Microdados)...")
@@ -210,7 +227,7 @@ print("Mesclando crimes com dados socioeconômicos...")
 base_final['Regiao_Administrativa'] = base_final['Regiao_Administrativa'].str.strip()
 df_final = pd.merge(
     base_final, 
-    df_socio[['Regiao_Administrativa', 'Renda_Per_Capita', 'Idade_Media']], 
+    df_socio[['Regiao_Administrativa', 'Renda_Per_Capita', 'Idade_Media', 'Policiamento_Militar_Perc', 'Seguranca_Privada_Perc', 'Seguranca_Comunitaria_Perc']], 
     on='Regiao_Administrativa', 
     how='left'
 )

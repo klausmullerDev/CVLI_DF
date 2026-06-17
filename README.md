@@ -44,11 +44,14 @@ CVLI_DF/
 O arquivo final analítico gerado unifica três fontes de dados distintas:
 1. **Dados Criminológicos (SSP/DF):** Quantidade anual de vítimas de Homicídio, Latrocínio, Lesão Corporal Seguida de Morte e Feminicídio por RA (2015-2024).
 2. **Dados Demográficos (PDAD/IBGE):** População total de 2024 de cada Região Administrativa para cálculo de taxas.
-3. **Dados Socioeconômicos (PDAD 2021):**
+3. **Dados Socioeconômicos e de Segurança (PDAD 2021):**
    * **Renda_Per_Capita:** Renda domiciliar média por pessoa da RA obtida a partir da amostra expandida de domicílios da PDAD 2021.
    * **Idade_Media:** Idade média da população residente na RA obtida a partir da amostra expandida de moradores.
+   * **Policiamento_Militar_Perc:** Percentual de domicílios que declaram ter policiamento militar regular nas proximidades da residência.
+   * **Seguranca_Privada_Perc:** Percentual de domicílios equipados com serviços ou dispositivos particulares de segurança (ex: câmeras, alarmes).
+   * **Seguranca_Comunitaria_Perc:** Percentual de domicílios que participam ou compartilham sistemas/redes de segurança comunitária com a vizinhança.
 
-*Nota: Regiões criadas após a pesquisa (Arapoanga, Água Quente) e áreas de contagem especial (Unidades Prisionais) exibem esses dois últimos indicadores como `NaN` na tabela (mostrados no dashboard como `"N/A"`).*
+*Nota: Regiões criadas após a pesquisa (Arapoanga, Água Quente) e áreas de contagem especial (Unidades Prisionais) exibem esses indicadores socioeconômicos e de segurança como `NaN` na tabela (mostrados no dashboard como `"N/A"`).*
 
 ---
 

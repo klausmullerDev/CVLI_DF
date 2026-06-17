@@ -852,6 +852,9 @@ function updateMap() {
         const raRow = rawData.find(item => item.Regiao_Administrativa === raName);
         const renda = raRow ? raRow.Renda_Per_Capita : null;
         const idadeMedia = raRow ? raRow.Idade_Media : null;
+        const pmPerc = raRow ? raRow.Policiamento_Militar_Perc : null;
+        const segPrivPerc = raRow ? raRow.Seguranca_Privada_Perc : null;
+        const segComPerc = raRow ? raRow.Seguranca_Comunitaria_Perc : null;
 
         const rendaText = (renda !== null && renda !== undefined && !isNaN(renda))
             ? `R$ ${renda.toFixed(2).replace('.', ',')}`
@@ -862,6 +865,21 @@ function updateMap() {
             ? `${idadeMedia.toFixed(1).replace('.', ',')} anos`
             : 'N/A';
         popupContent.appendChild(createPopupRow('Idade Média:', idadeText));
+
+        const pmText = (pmPerc !== null && pmPerc !== undefined && !isNaN(pmPerc))
+            ? `${pmPerc.toFixed(1).replace('.', ',')}%`
+            : 'N/A';
+        popupContent.appendChild(createPopupRow('Policiamento Militar:', pmText));
+
+        const segPrivText = (segPrivPerc !== null && segPrivPerc !== undefined && !isNaN(segPrivPerc))
+            ? `${segPrivPerc.toFixed(1).replace('.', ',')}%`
+            : 'N/A';
+        popupContent.appendChild(createPopupRow('Segurança Privada:', segPrivText));
+
+        const segComText = (segComPerc !== null && segComPerc !== undefined && !isNaN(segComPerc))
+            ? `${segComPerc.toFixed(1).replace('.', ',')}%`
+            : 'N/A';
+        popupContent.appendChild(createPopupRow('Segurança Comunitária:', segComText));
 
         // Linha Perfil de Risco (ML K-Means)
         popupContent.appendChild(createPopupRow('Perfil de Risco (K-Means):', clusterInfo.nome));

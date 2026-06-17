@@ -151,16 +151,30 @@ Os arquivos originais de microdados da PDAD (`Moradores.csv` com ~52MB e `Domici
   - `A01ra` (Código identificador da Região Administrativa).
   - `renda_domiciliar_pc` (Renda Domiciliar Per Capita).
   - `idade` (Idade do morador).
+  - `B20_1` (Policiamento militar regular nas proximidades).
+  - `B20_2` (Serviço/equipamento particular de segurança).
+  - `B20_3` (Serviço/equipamento comunitário de segurança com vizinhos).
 - Definimos explicitamente o parâmetro `encoding='latin-1'` para tratar corretamente a decodificação de caracteres especiais comuns em bases de dados governamentais brasileiras.
 
 ### B. Agregação e Mapeamento
-1. **Renda Domiciliar Per Capita Média:** Agrupamos a base de domicílios por `A01ra`, limpamos os caracteres de decimal (substituindo `,` por `.`), de modo a converter para dados numéricos reais, e calculamos a média aritmética de renda per capita de cada região.
-2. **Idade Média:** Agrupamos a base de moradores por `A01ra` e calculamos a idade média da população residente em cada RA.
+1. **Indicadores Socioeconômicos Clássicos:**
+   * **Renda Domiciliar Per Capita Média:** Agrupamos a base de domicílios por `A01ra`, limpamos os caracteres de decimal (substituindo `,` por `.`) de modo a converter para dados numéricos reais, e calculamos a média aritmética de renda per capita de cada região.
+   * **Idade Média:** Agrupamos a base de moradores por `A01ra` e calculamos a idade média da população residente em cada RA.
+2. **Indicadores de Percepção e Infraestrutura de Segurança:**
+   Para calcular a prevalência de policiamento e segurança em cada RA de forma fidedigna, aplicamos um mapeamento numérico das respostas às perguntas `B20_1`, `B20_2` e `B20_3`:
+   * Resposta **"Sim"** (código 1) $\rightarrow$ `100.0`
+   * Resposta **"Não"** (código 2) $\rightarrow$ `0.0`
+   * Resposta **"Não sabe"** (código 88888) e respostas nulas $\rightarrow$ `NaN` (valores nulos de ponto flutuante do NumPy)
+   
+   Ao realizar o agrupamento (`groupby`) por RA e extrair a média (`mean`) desses novos valores calculados, o Pandas automaticamente ignora os registros `NaN`. O resultado matemático equivale exatamente à porcentagem de domicílios que responderam de forma afirmativa ("Sim") dentre aqueles que expressaram uma resposta válida, fornecendo os percentuais correspondentes de:
+   * **`Policiamento_Militar_Perc`**: Presença percebida de policiamento militar no entorno.
+   * **`Seguranca_Privada_Perc`**: Adoção residencial de segurança privada/tecnológica individual.
+   * **`Seguranca_Comunitaria_Perc`**: Engajamento em redes de proteção comunitária (ex: vigilância de vizinhança).
 3. **Mapeamento Categórico:** Aplicamos o dicionário de códigos oficial da PDAD para traduzir o ID numérico `A01ra` no nome por extenso da RA.
 4. **Reconciliação Geográfica:** Normalizamos as strings de nomes para garantir a paridade com a base de crimes (ex: `Plano Piloto` mapeado para `Brasília (Plano Piloto)`).
 
 ### C. Resultados e Cruzamento
-Utilizamos um `left join` (`pd.merge(..., how='left')`) para anexar os dois novos indicadores à base unificada de crimes históricos. O arquivo final de saída foi salvo em `base_final_analitica_df.csv` com codificação `utf-8-sig`.
+Utilizamos um `left join` (`pd.merge(..., how='left')`) para anexar os novos indicadores socioeconômicos e de segurança à base unificada de crimes históricos. O arquivo final de saída foi salvo em `base_final_analitica_df.csv` com codificação `utf-8-sig`.
 - **Tratamento de Dados Ausentes:** As novas RAs criadas após 2021 (*Arapoanga* e *Água Quente*) e a categoria especial *Unidades Prisionais* não possuem dados no censo de domicílios/moradores de 2021. Essas ocorrências foram mantidas com valores nulos (`NaN`), que são capturados pelo JavaScript do Dashboard e renderizados elegantemente na tela como `"N/A"` para preservar a transparência metodológica.
 
 ---
