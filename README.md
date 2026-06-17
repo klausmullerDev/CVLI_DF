@@ -122,16 +122,29 @@ O arquivo final analítico gerado unifica três fontes de dados distintas:
 
 ## 🔗 Fontes de Dados
 
-Os dados utilizados neste projeto foram obtidos de portais oficiais do Governo do Distrito Federal:
+Os dados utilizados neste projeto foram obtidos de portais oficiais do Distrito Federal. A tabela abaixo resume as fontes, os arquivos brutos originais e o volume de dados extraído:
+
+| Categoria de Dados | Fonte Oficial | Arquivo Original (`/sources`) | Aba / Filtro Utilizado | Volume de Dados Brutos |
+| :--- | :--- | :--- | :--- | :--- |
+| **Homicídios** | SSP/DF | `tabelasseriehistorica-homicidio.xlsx` | Aba Única | 48 linhas de dados |
+| **Latrocínios** | SSP/DF | `tabelasseriehistorica-latrocinio.xlsx` | Aba Única | 39 linhas de dados |
+| **Lesão Seg. Morte (LCSM)** | SSP/DF | `tabelasseriehistorica-lcsm.xlsx` | Aba Única | 36 linhas de dados |
+| **Feminicídios** | SSP/DF | `tabelasseriehistorica-feminicidio.xlsx` | `Feminicidio (atualizado)` | 37 linhas de dados |
+| **População (Projeção 2024)** | SSP/DF (IBGE) | `tabelasseriehistorica-feminicidio.xlsx` | `População` | 40 linhas de dados |
+| **Domicílios (Socioeconômico)** | IPEDF / GDF | `PDAD_2021-Domicilios.csv` | Microdados (Separador: `;`) | 30.889 linhas (30.888 registros) |
+| **Moradores (Demografia)** | IPEDF / GDF | `PDAD_2021-Moradores.csv` | Microdados (Separador: `;`) | 83.482 linhas (83.481 registros) |
+| **Dicionário de Variáveis** | IPEDF / GDF | `dicionario_de_variaveis_pdad_2021.xls` | `anexo_1` (Mapeamento RAs) | 36 códigos catalogados |
+
+* **Volume Consolidado Final (Carga):** O pipeline de ETL processou essas fontes e gerou uma matriz analítica final contendo exatamente **1.440 registros** (36 RAs × 10 Anos × 4 Tipos de Crimes), anexando os respectivos indicadores demográficos, socioeconômicos e de infraestrutura a cada observação.
+
+### Links de Acesso Direto:
 
 1. **Dados Socioeconômicos e Demográficos (PDAD 2021):**
    * Instituto de Pesquisa e Estatística do Distrito Federal (IPEDF).
-   * Microdados de Domicílios e Moradores da Pesquisa Distrital por Amostra de Domicílios.
    * Fonte: [IPEDF - PDAD 2021](https://ipe.df.gov.br/pdad-2021-3)
 
 2. **Dados Criminológicos (Série Histórica de Segurança Pública):**
    * Secretaria de Estado de Segurança Pública do Distrito Federal (SSP/DF).
-   * Estatísticas de Crimes Violentos Letais Intencionais (CVLI) e Feminicídios por Região Administrativa.
    * Fonte: [Portal de Dados Abertos do DF - Segurança Pública](https://www.dados.df.gov.br/dataset?q=SEGURAN%C3%87A&sort=title_string+asc)
 
 ---
