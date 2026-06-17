@@ -6,6 +6,26 @@ O repositório foi enriquecido com os microdados socioeconômicos oficiais da **
 
 ---
 
+## 🎯 Motivação e Objetivos do Projeto
+
+A análise de segurança pública frequentemente sofre com dois problemas: a **subjetividade política** na classificação de áreas de risco e a **falta de integração** entre dados de criminalidade e indicadores de vulnerabilidade socioeconômica.
+
+Este projeto nasceu para solucionar essas lacunas, orientando-se pelos seguintes propósitos:
+
+1. **Substituição de Vieses por Estatística (Por que K-Means?):**
+   Em vez de categorizar a periculosidade das Regiões Administrativas (RAs) com base em percepções empíricas ou critérios arbitrários, utilizamos o agrupamento estatístico não supervisionado. O K-Means analisa simultaneamente múltiplas dimensões criminais por 100 mil habitantes, classificando as RAs em perfis de risco de forma puramente matemática e isenta de vieses humanos.
+
+2. **Entendimento das Causas Sociais (Por que a PDAD 2021?):**
+   A criminalidade não ocorre no vácuo. Ao cruzar as taxas de crimes com a Renda Per Capita Média e a Idade Média da PDAD, o projeto permite investigar a correlação entre a vulnerabilidade socioeconômica regional e a incidência de violência letal.
+
+3. **Avaliação de Políticas de Segurança (Por que os indicadores de infraestrutura?):**
+   A inclusão de percentuais de policiamento militar percebido, uso de segurança privada e redes comunitárias de vizinhos oferece subsídios para analisar a eficácia da presença estatal nas ruas e como as diferentes comunidades respondem à violência.
+
+4. **Suporte à Decisão de Alocação de Recursos (Justiça Distributiva):**
+   Fornecer aos gestores públicos, acadêmicos e cidadãos um painel visual e interativo para identificar tendências históricas reais (YoY) e alocar policiamento, iluminação e programas sociais de forma focada e proporcional à criticidade comprovada pelos dados.
+
+---
+
 ## 📂 Estrutura Organizacional do Projeto
 
 O projeto está estruturado de forma limpa e modular:
