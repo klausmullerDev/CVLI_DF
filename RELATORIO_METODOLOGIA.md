@@ -163,4 +163,18 @@ Os arquivos originais de microdados da PDAD (`Moradores.csv` com ~52MB e `Domici
 Utilizamos um `left join` (`pd.merge(..., how='left')`) para anexar os dois novos indicadores à base unificada de crimes históricos. O arquivo final de saída foi salvo em `base_final_analitica_df.csv` com codificação `utf-8-sig`.
 - **Tratamento de Dados Ausentes:** As novas RAs criadas após 2021 (*Arapoanga* e *Água Quente*) e a categoria especial *Unidades Prisionais* não possuem dados no censo de domicílios/moradores de 2021. Essas ocorrências foram mantidas com valores nulos (`NaN`), que são capturados pelo JavaScript do Dashboard e renderizados elegantemente na tela como `"N/A"` para preservar a transparência metodológica.
 
+---
+
+## 7. Fontes de Dados e Referências
+
+Para garantir a reprodutibilidade e a transparência metodológica deste estudo acadêmico, listamos abaixo os canais oficiais de coleta dos dados utilizados no pipeline:
+
+1. **Microdados da PDAD 2021 (IPEDF):**
+   * Dados socioeconômicos (renda familiar per capita e idade média por RA) obtidos através das tabelas expandidas da amostra domiciliar.
+   * Endereço Eletrônico: [https://ipe.df.gov.br/pdad-2021-3](https://ipe.df.gov.br/pdad-2021-3)
+
+2. **Dados Abertos de Segurança Pública do Distrito Federal:**
+   * Séries históricas de criminalidade da SSP/DF, contendo as ocorrências mensais e anuais de homicídios, feminicídios, latrocínios e lesões corporais seguidas de morte.
+   * Endereço Eletrônico: [https://www.dados.df.gov.br/dataset?q=SEGURAN%C3%87A&sort=title_string+asc](https://www.dados.df.gov.br/dataset?q=SEGURAN%C3%87A&sort=title_string+asc)
+
 

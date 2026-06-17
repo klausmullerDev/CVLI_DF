@@ -52,6 +52,40 @@ O arquivo final analítico gerado unifica três fontes de dados distintas:
 
 ---
 
+## 🔗 Fontes de Dados
+
+Os dados utilizados neste projeto foram obtidos de portais oficiais do Governo do Distrito Federal:
+
+1. **Dados Socioeconômicos e Demográficos (PDAD 2021):**
+   * Instituto de Pesquisa e Estatística do Distrito Federal (IPEDF).
+   * Microdados de Domicílios e Moradores da Pesquisa Distrital por Amostra de Domicílios.
+   * Fonte: [IPEDF - PDAD 2021](https://ipe.df.gov.br/pdad-2021-3)
+
+2. **Dados Criminológicos (Série Histórica de Segurança Pública):**
+   * Secretaria de Estado de Segurança Pública do Distrito Federal (SSP/DF).
+   * Estatísticas de Crimes Violentos Letais Intencionais (CVLI) e Feminicídios por Região Administrativa.
+   * Fonte: [Portal de Dados Abertos do DF - Segurança Pública](https://www.dados.df.gov.br/dataset?q=SEGURAN%C3%87A&sort=title_string+asc)
+
+---
+
+## 🧠 Por que utilizar o Algoritmo K-Means?
+
+A escolha do **K-Means Clustering** (Aprendizado de Máquina Não Supervisionado) para a segmentação de risco das RAs justifica-se pelos seguintes fatores metodológicos e estatísticos:
+
+1. **Eliminação de Vieses e Subjetividade Humana:**
+   Em vez de definir arbitrariamente limites de criminalidade (por exemplo, decidir manualmente que "mais de 10 homicídios por ano é alto risco"), o algoritmo encontra naturalmente agrupamentos de RAs com perfis semelhantes com base estritamente na distribuição estatística dos dados reais.
+
+2. **Análise Multidimensional:**
+   O K-Means avalia a similaridade considerando simultaneamente quatro variáveis críticas: as taxas de Homicídio, Latrocínio, Lesão Corporal Seguida de Morte (LCSM) e Feminicídio por 100 mil habitantes. Uma análise visual humana de tantas dimensões cruzadas simultaneamente seria extremamente complexa e imprecisa.
+
+3. **Independência de Escala (StandardScaler):**
+   Como as taxas de homicídios costumam ter magnitudes numéricas muito superiores às taxas de feminicídios, aplicamos a padronização das características. Isso garante que todos os tipos de crimes tenham o mesmo peso no cálculo das distâncias euclidianas do algoritmo, impedindo que uma variável dominante oculte as outras.
+
+4. **Classificação Semântica e Determinística:**
+   Embora o K-Means por si só gere grupos de forma não ordenada (onde os clusters 0, 1 e 2 não têm significado de ordenação inerente), nosso pipeline analisa os centroides resultantes e ordena os IDs de forma determinística com base na soma das taxas de crimes. Isso assegura que o ID 0 sempre representará o **Baixo Risco**, o ID 1 o **Médio Risco** e o ID 2 o **Alto Risco**, permitindo uma colorização consistente e automatizada no dashboard.
+
+---
+
 ## 🚀 Como Iniciar o Dashboard (Execução Rápida)
 
 Você **não precisa instalar nenhuma biblioteca adicional do Python** se desejar apenas visualizar o dashboard! Ele funciona imediatamente usando os dados analíticos pré-processados que estão na pasta `/src`.
